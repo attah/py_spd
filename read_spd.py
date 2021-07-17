@@ -12,6 +12,9 @@ def readData(h):
     # print(r, file=sys.stderr)
     return r
 
+def asciiHexChar(i):
+    return '{:02x}'.format(i).encode('ascii')
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--bin", help="output raw binary",
                     action="store_true")
@@ -34,8 +37,8 @@ with hid.Device(vid, pid) as h:
     print("-"*76, file=sys.stderr)
     for addr in range(0, 256, 8):
       cmd = bytearray(b'BT-I2C2RD50')
-      cmd.extend('{:02x}'.format(addr).encode('ascii'))
-      cmd.extend("08".encode('ascii'))
+      cmd.extend(asciiHexChar(addr))
+      cmd.extend(asciiHexChar(8))
       h.write(bytes(cmd))
       r = readData(h)
       data.extend(bytes.fromhex(r[2:25].decode('ascii')))
